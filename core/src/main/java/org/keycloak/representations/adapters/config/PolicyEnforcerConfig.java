@@ -17,6 +17,7 @@
  */
 package org.keycloak.representations.adapters.config;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,11 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+
 import org.keycloak.representations.idm.authorization.ResourceRepresentation;
 import org.keycloak.representations.idm.authorization.ScopeRepresentation;
 
@@ -326,6 +332,29 @@ public class PolicyEnforcerConfig {
         public void setLifespan(long lifespan) {
             this.lifespan = lifespan;
         }
+    }
+
+    public static class UserManagedAccessConfigDeserializer extends StdDeserializer<UserManagedAccessConfig> {
+
+        private static final long serialVersionUID = 1L;
+
+        public UserManagedAccessConfigDeserializer() {
+            this(null);
+        }
+
+        public UserManagedAccessConfigDeserializer(Class<?> vc) {
+            super(vc);
+        }
+
+        @Override
+		public UserManagedAccessConfig deserialize(JsonParser p, DeserializationContext ctxt)
+				throws IOException, JsonProcessingException {
+			if(p == null) {
+                return null;
+            }
+
+            return new UserManagedAccessConfig();
+		}
     }
 
     public enum EnforcementMode {
